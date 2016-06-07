@@ -58,6 +58,32 @@ void increment(HWND hwnd) {
 		SendMessage(hwnd, WM_DESTROY, NULL, NULL); // inchid programul ?? 
 	}
 }
+int adauga_memorie(HWND hwnd) {
+	wchar_t numar[10];
+	GetDlgItemText(hwnd, EDIT1_ID, numar, 10); // pune valoarea introdusa de la tastarura in "numar"
+	int nr = _wtoi(numar);						//transformam din string in int ( <=> atoi() )
+	if (matrice[i] == 0) {//verific daca zona e libera
+		matrice[i] = nr;	//locatia din matrice ia valoarea numarului
+		SetDlgItemText(hwnd, 1000 * (i % 10) + (i / 10), numar);	//scriem numarul
+		increment(hwnd);							// incrementam i
+	}
+	else {
+		mutari[dim].delai = i; //de aici pleaca
+
+		do {
+			increment(hwnd); // muta cursorul  pana gaseste pozitie libera in matrice
+		} while (matrice[i] != 0);
+
+		mutari[dim].lai = i;
+		dim++;
+
+		matrice[i] = nr; // //locatia din matrice ia valoarea numarului
+		SetDlgItemText(hwnd, 1000 * (i % 10) + (i / 10), numar); //scriem numarul
+		increment(hwnd); //incrementam i
+	}
+	return 0;
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int nCmdShow) {
 	WNDCLASSEX wc;
