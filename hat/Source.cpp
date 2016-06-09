@@ -84,6 +84,52 @@ int adauga_memorie(HWND hwnd) {
 	return 0;
 }
 
+
+
+
+
+
+
+
+void sortare()
+{
+	int j = 0;
+	int l = 0;
+	while (j != i - 1)
+	{
+		l = j + 1;
+		if (matrice[l] == -1)
+		{
+			for (int k = 0; k < dim; k++)
+			{
+				if (l == mutari[k].delai) l = mutari[k].lai;
+			}
+		}
+		while (l != i - 0)
+		{
+			if (matrice[j]>matrice[l])
+			{
+				interschimba(j, l);
+			}
+		}
+		l++;
+
+
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int nCmdShow) {
 	WNDCLASSEX wc;
