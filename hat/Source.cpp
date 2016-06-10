@@ -114,7 +114,14 @@ void sortare()
 				if (j == mutari[k].delai) j = mutari[k].lai;
 			}
 		}
-
+		j++;
+		if (matrice[j] == -1) {
+			for (int k = 0; k < dim; k++) {
+				if (j == mutari[k].delai) {
+					j = mutari[k].lai;
+				}
+			}
+		}
 
 	}
 }
