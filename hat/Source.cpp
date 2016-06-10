@@ -128,6 +128,41 @@ void sortare()
 
 
 
+void cautare(int nr) {
+	int i2 = 0;
+	int gasit = 0;
+	int schimbat = 0;
+	while (matrice[i2] != 0 && i2 != M) {
+		if (matrice[i2] == nr) {
+			wchar_t mesaj[100];
+			wchar_t numar[10];
+			wcscpy_s(mesaj, 100, L"A fost gasit pe pozitia ( ");
+			_itow_s(i2 / 10, numar, 10, 10);
+			wcscat_s(mesaj, 100, numar);
+			wcscat_s(mesaj, 100, L", ");
+			_itow_s(i2 % 10, numar, 10, 10);
+			wcscat_s(mesaj, 100, numar);
+			wcscat_s(mesaj, 100, L" ) !!!");
+			MessageBox(hwnd_global, mesaj, L"Gasit", MB_ICONINFORMATION);
+			gasit = 1;
+		}
+		if (matrice[i2] == -1) {
+			for (int k = 0; k < dim; k++) {
+				if (i2 == mutari[k].delai) {
+					i2 = mutari[k].lai;
+					schimbat = 1;
+				}
+			}
+		}
+		if (schimbat) {
+			schimbat = 0;
+		}
+		else {
+			i2++;
+		}
+	}
+	if (!gasit) MessageBox(hwnd_global, L"Numariul nu a fost gasit!", L"Ups!", MB_ICONINFORMATION);
+}
 
 
 
