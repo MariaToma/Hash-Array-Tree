@@ -161,9 +161,9 @@ void cautare(int nr) {
 			i2++;
 		}
 	}
-	if (!gasit) MessageBox(hwnd_global, L"Numariul nu a fost gasit!", L"Ups!", MB_ICONINFORMATION);
+	if (!gasit) MessageBox(hwnd_global, L"Numarul nu a fost gasit!", L"Ups!", MB_ICONINFORMATION);
 }
-
+ 
 
 
 
@@ -200,6 +200,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			MB_ICONEXCLAMATION | MB_OK);
 		return 0;
 	}
+	// Step 2: Creating the Window
+	hwnd = CreateWindowEx(
+		WS_EX_CLIENTEDGE,
+		g_szClassName,
+		L"Hashed array trees",
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT, 500, 600,
+		NULL, NULL, hInstance, NULL);
+
+	if (hwnd == NULL) {
+		MessageBox(NULL, L"Window Creation Failed!", L"Error!",
+			MB_ICONEXCLAMATION | MB_OK);
+		return 0;
+	}
+
+	hwnd_global = hwnd;
+
+	ShowWindow(hwnd, nCmdShow);
+	UpdateWindow(hwnd);
 
 	// Step 3: The Message Loop
 	while (GetMessage(&Msg, NULL, 0, 0) > 0) {
