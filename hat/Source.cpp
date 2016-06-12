@@ -125,7 +125,66 @@ void sortare()
 
 	}
 }
+void cautare_stergere(int nr) {
+	int i2 = 0;
+	int i3;
+	int gasit = 0;
+	int schimbat = 0;
+	while (matrice[i2] != 0 && i2 != M) {
+		if (matrice[i2] == nr && !gasit) {
+			gasit = 1;
+		}
+		if (gasit) {
+			i3 = i2 + 1;
+			if (matrice[i3] == -1) {
+				for (int k = 0; k < dim; k++) {
+					if (i3 == mutari[k].delai) {
+						i3 = mutari[k].lai;
+					}
+				}
+			}
+			if (i3 == i) {
+				matrice[i2] = 0;
+				SetDlgItemText(hwnd_global, 1000 * (i2 % 10) + (i2 / 10), L"");
 
+				int sch = 0;
+				for (int k = 0; k < dim; k++) {
+					if (i == mutari[k].lai) {
+						i = mutari[k].delai - 1;
+						sch = 1;
+					}
+				}
+				if (sch == 0) {
+					i--;
+				}
+
+				break;
+			}
+			if (matrice[i2] != -1) {
+				matrice[i2] = matrice[i3];
+				wchar_t buff[30];
+				GetDlgItemText(hwnd_global, 1000 * (i3 % 10) + (i3 / 10), buff, 30);
+				SetDlgItemText(hwnd_global, 1000 * (i2 % 10) + (i2 / 10), buff);
+			}
+		}
+
+		if (matrice[i2] == -1) {
+			for (int k = 0; k < dim; k++) {
+				if (i2 == mutari[k].delai) {
+					i2 = mutari[k].lai;
+					schimbat = 1;
+				}
+			}
+		}
+		if (schimbat) {
+			schimbat = 0;
+		}
+		else {
+			i2++;
+		}
+	}
+	if (!gasit) MessageBox(hwnd_global, L"Numariul nu a fost gasit!", L"Ups!", MB_ICONINFORMATION);
+}
 
 
 void cautare(int nr) {
