@@ -1,10 +1,10 @@
 #include <windows.h>
-#include <time.h>			//pentru random
+#include <time.h>			
 #include <stdio.h>
 #include "resource.h"
 
-#define M 140
-#define BUTTON1_ID 12500 // fiecare buton are un id
+#define M 140 // numarul de "locatii" din memorie
+#define BUTTON1_ID 12500 
 #define BUTTON2_ID 12501
 #define BUTTON3_ID 12502
 #define EDIT1_ID 12503
@@ -20,7 +20,7 @@ typedef struct {
 BestStructEver mutari[M];
 int dim = 0;
 
-const int offsetX = 30; //dimensiunile "memoriei" reprezentata prin matrice
+const int offsetX = 30; //dimensiunile "memoriei" reprezentata prin "matrice"
 const int offsetY = 100;
 
 const wchar_t g_szClassName[] = L"myWindowClass";
@@ -39,7 +39,8 @@ void init() {
 		}
 	}
 }
-void interschimba(int i1, int i2) { // functie folosita pt sortare
+void interschimba(int i1, int i2)
+{ // functie folosita pt sortare
 	int aux;
 	wchar_t buff1[30];
 	wchar_t buff2[30];
@@ -52,114 +53,140 @@ void interschimba(int i1, int i2) { // functie folosita pt sortare
 	matrice[i2] = aux;
 }
 
-void increment(HWND hwnd) {
+void increment(HWND hwnd)
+{
 	i++;
-	if (i == M) { //cand ajunge cursorul pe pozitia dimensiunii maxime 
-		MessageBox(hwnd, L"Out of memory!!!", L"ERROR", MB_ICONERROR); //afisez mesajul
-		SendMessage(hwnd, WM_DESTROY, NULL, NULL); // inchid programul ?? 
+	if (i == M) 
+	{ //cand ajunge "cursorul" pe pozitia dimensiunii maxime 
+		MessageBox(hwnd, L"Out of memory!!!", L"ERROR", MB_ICONERROR); 
+		SendMessage(hwnd, WM_DESTROY, NULL, NULL); // inchid programul  
 	}
 }
 
-int adauga_memorie(HWND hwnd) {
+int adauga_memorie(HWND hwnd)
+{
 	wchar_t numar[10];
-	GetDlgItemText(hwnd, EDIT1_ID, numar, 10); // pune valoarea introdusa de la tastarura in "numar"
-	int nr = _wtoi(numar);						//transformam din string in int ( <=> atoi() )
+	GetDlgItemText(hwnd, EDIT1_ID, numar, 10); 
+	int nr = _wtoi(numar);						//transformam din wide char* in int ( <=> atoi() )
 	if (matrice[i] == 0) {//verific daca zona e libera
-		matrice[i] = nr;	//locatia din matrice ia valoarea numarului
-		SetDlgItemText(hwnd, 1000 * (i % 10) + (i / 10), numar);	//scriem numarul
+		matrice[i] = nr;	//locatia ia valoarea numarului
+		SetDlgItemText(hwnd, 1000 * (i % 10) + (i / 10), numar);	
 		increment(hwnd);							// incrementam i
 	}
 	else {
 		mutari[dim].delai = i; //de aici pleaca
 
 		do {
-			increment(hwnd); // muta cursorul  pana gaseste pozitie libera in matrice
+			increment(hwnd); //  pana gaseste pozitie libera in matrice
 		} while (matrice[i] != 0);
 
 		mutari[dim].lai = i;
 		dim++;
 
 		matrice[i] = nr; // //locatia din matrice ia valoarea numarului
-		SetDlgItemText(hwnd, 1000 * (i % 10) + (i / 10), numar); //scriem numarul
-		increment(hwnd); //incrementam i
+		SetDlgItemText(hwnd, 1000 * (i % 10) + (i / 10), numar);
+		increment(hwnd); 
 	}
 	return 0;
 }
 
-void sortare() {
+void sortare()
+{
 	int j = 0, l = 0;
-	while (j != i - 1) {
+	while (j != i - 1) 
+ {
 		l = j + 1;
-		if (matrice[l] == -1) {
-			for (int k = 0; k < dim; k++) {
-				if (l == mutari[k].delai) {
+		if (matrice[l] == -1)
+		{
+			for (int k = 0; k < dim; k++)
+			{
+				if (l == mutari[k].delai)
+				{
 					l = mutari[k].lai;
 				}
 			}
 		}
 
-		while (l != i - 0) {
-			if (matrice[j] > matrice[l]) {
+		while (l != i - 0)
+		{
+			if (matrice[j] > matrice[l])
+			{
 				interschimba(j, l);
 			}
 
 			l++;
 			if (matrice[l] == -1) {
-				for (int k = 0; k < dim; k++) {
-					if (l == mutari[k].delai) {
+				for (int k = 0; k < dim; k++) 
+				{
+					if (l == mutari[k].delai)
+					{
 						l = mutari[k].lai;
 					}
 				}
 			}
 		}
-
 		j++;
-		if (matrice[j] == -1) {
-			for (int k = 0; k < dim; k++) {
-				if (j == mutari[k].delai) {
+		if (matrice[j] == -1)
+		{
+			for (int k = 0; k < dim; k++) 
+			{
+				if (j == mutari[k].delai) 
+				{
 					j = mutari[k].lai;
 				}
 			}
 		}
-	}
+  }
 }
 
-void cautare_stergere(int nr) {
+void cautare_stergere(int nr)
+{
 	int i2 = 0;
 	int i3;
 	int gasit = 0;
 	int schimbat = 0;
-	while (matrice[i2] != 0 && i2 != M) {
-		if (matrice[i2] == nr && !gasit) {
+	while (matrice[i2] != 0 && i2 != M) 
+	{
+		if (matrice[i2] == nr && !gasit)
+		{
 			gasit = 1;
 		}
-		if (gasit) {
+		if (gasit) 
+		{
 			i3 = i2 + 1;
-			if (matrice[i3] == -1) {
-				for (int k = 0; k < dim; k++) {
-					if (i3 == mutari[k].delai) {
+			if (matrice[i3] == -1) 
+			{
+				for (int k = 0; k < dim; k++)
+				{
+					if (i3 == mutari[k].delai) 
+					{
 						i3 = mutari[k].lai;
 					}
 				}
 			}
-			if (i3 == i) {
+			if (i3 == i)
+			{
 				matrice[i2] = 0;
 				SetDlgItemText(hwnd_global, 1000 * (i2 % 10) + (i2 / 10), L"");
 
 				int sch = 0;
-				for (int k = 0; k < dim; k++) {
-					if (i == mutari[k].lai) {
+				for (int k = 0; k < dim; k++)
+				{
+					if (i == mutari[k].lai)
+					{
 						i = mutari[k].delai - 1;
 						sch = 1;
 					}
 				}
-				if (sch == 0) {
+				if (sch == 0)
+				{
 					i--;
 				}
 
 				break;
 			}
-			if (matrice[i2] != -1) {
+			if (matrice[i2] != -1) 
+			{
 				matrice[i2] = matrice[i3];
 				wchar_t buff[30];
 				GetDlgItemText(hwnd_global, 1000 * (i3 % 10) + (i3 / 10), buff, 30);
@@ -167,7 +194,8 @@ void cautare_stergere(int nr) {
 			}
 		}
 
-		if (matrice[i2] == -1) {
+		if (matrice[i2] == -1)
+		{
 			for (int k = 0; k < dim; k++) {
 				if (i2 == mutari[k].delai) {
 					i2 = mutari[k].lai;
@@ -189,29 +217,35 @@ void cautare(int nr) {
 	int i2 = 0;
 	int gasit = 0;
 	int schimbat = 0;
-	while (matrice[i2] != 0 && i2 != M) { //daca este != 0 si daca pozatia sa nu este mai mare decat dimensiunea
-		if (matrice[i2] == nr) {
+	while (matrice[i2] != 0 && i2 != M)
+	{ //daca este != 0 si daca pozatia sa nu este mai mare decat dimensiunea
+		if (matrice[i2] == nr)
+		{
 			wchar_t mesaj[100];
 			wchar_t numar[10];
 			wcscpy_s(mesaj, 100, L"A fost gasit pe pozitia ( ");
-			_itow_s(i2 / 10, numar, 10, 10); // "formez" pozitia numarului
+			_itow_s(i2 / 10, numar, 10, 10); // "formez" coordonata x a numarului
 			wcscat_s(mesaj, 100, numar);
 			wcscat_s(mesaj, 100, L", ");
-			_itow_s(i2 % 10, numar, 10, 10);
+			_itow_s(i2 % 10, numar, 10, 10); // coordonata y a numarului
 			wcscat_s(mesaj, 100, numar);
 			wcscat_s(mesaj, 100, L" ) !!!");
 			MessageBox(hwnd_global, mesaj, L"Gasit", MB_ICONINFORMATION);// denumesc fereastra
 			gasit = 1;
+			//break;
 		}
 		if (matrice[i2] == -1) {
-			for (int k = 0; k < dim; k++) {
-				if (i2 == mutari[k].delai) {
+			for (int k = 0; k < dim; k++) 
+			{
+				if (i2 == mutari[k].delai)
+				{
 					i2 = mutari[k].lai;
 					schimbat = 1;
 				}
 			}
 		}
-		if (schimbat) {
+		if (schimbat) 
+		{
 			schimbat = 0;
 		}
 		else {
@@ -223,37 +257,46 @@ void cautare(int nr) {
 
 INT_PTR CALLBACK procedura(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) { //pt dialog
 	UNREFERENCED_PARAMETER(lParam);
-	switch (message) {
+	switch (message)
+	{
 	case WM_INITDIALOG:
 	{
 						  int i2 = 0;
 						  int schimbat = 0;
-						  while (matrice[i2] != 0 && i2 != M) {
-							  if (matrice[i2] > 0) {
+						  while (matrice[i2] != 0 && i2 != M) 
+						  {
+							  if (matrice[i2] > 0)
+							  {
 								  wchar_t string[30];
 								  GetDlgItemText(hwnd_global, 1000 * (i2 % 10) + (i2 / 10), string, 30);
 								  SendDlgItemMessage(hDlg, IDC_LIST1, LB_ADDSTRING, NULL, (LPARAM)string);
 								  //combinatia intre GetDlgItem si SendMessage()
 							  }
-							  if (matrice[i2] == -1) {
-								  for (int k = 0; k < dim; k++) {
-									  if (i2 == mutari[k].delai) {
+							  if (matrice[i2] == -1)
+							  {
+								  for (int k = 0; k < dim; k++)
+								  {
+									  if (i2 == mutari[k].delai)
+									  {
 										  i2 = mutari[k].lai;
 										  schimbat = 1;
 									  }
 								  }
 							  }
-							  if (schimbat) {
+							  if (schimbat) 
+							  {
 								  schimbat = 0;
 							  }
-							  else {
+							  else 
+							  {
 								  i2++;
 							  }
 						  }
 	}
 		return (INT_PTR)TRUE;
 	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) {
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		{
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
@@ -262,9 +305,10 @@ INT_PTR CALLBACK procedura(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 	return (INT_PTR)FALSE;
 }
 
-// Step 4: the Window Procedure //?????
+// Step 4: the Window Procedure 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-	switch (msg) {
+	switch (msg)
+	{
 	case WM_PAINT:
 	{
 					 PAINTSTRUCT ps;
@@ -277,26 +321,31 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	case WM_COMMAND:
 	{
 					   int wmId = LOWORD(wParam);
-					   if (wmId == BUTTON1_ID) {
+					   if (wmId == BUTTON1_ID)
+					   {
 						   adauga_memorie(hwnd);
 						   SetDlgItemText(hwnd, EDIT1_ID, L"");
 						   SetFocus(GetDlgItem(hwnd, EDIT1_ID));
 					   }
-					   if (wmId == BUTTON2_ID) {
+					   if (wmId == BUTTON2_ID)
+					   {
 						   //DialogBox((HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),
 						   DialogBox((HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
 							   MAKEINTRESOURCE(IDD_DIALOG1),
 							   hwnd,
 							   (DLGPROC)procedura);
 					   }
-					   if (wmId == BUTTON3_ID) {
+					   if (wmId == BUTTON3_ID) 
+					   {
 						   int nr = GetDlgItemInt(hwnd, EDIT2_ID, NULL, NULL);
 						   cautare(nr);
 					   }
-					   if (wmId == BUTTON5_ID) {
+					   if (wmId == BUTTON5_ID)
+					   {
 						   sortare();
 					   }
-					   if (wmId == BUTTON4_ID) {
+					   if (wmId == BUTTON4_ID) 
+					   {
 						   int nr = GetDlgItemInt(hwnd, EDIT2_ID, NULL, NULL);
 						   cautare_stergere(nr);
 					   }
@@ -314,8 +363,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	return 0;
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine, int nCmdShow) {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine, int nCmdShow) 
+{
 	WNDCLASSEX wc;
 	HWND hwnd;
 	MSG Msg;
@@ -331,7 +380,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wc.cbWndExtra = 0;
 	wc.hInstance = hInstance;
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hCursor = LoadCursor(NULL,IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = g_szClassName;
