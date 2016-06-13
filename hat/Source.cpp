@@ -222,14 +222,98 @@ void cautare(int nr) {
 	}
 	if (!gasit) MessageBox(hwnd_global, L"Numarul nu a fost gasit!", L"Ups!", MB_ICONINFORMATION);
 }
- 
 
+INT_PTR CALLBACK procedura(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message) {
+	case WM_INITDIALOG:
+	{
+						  int i2 = 0;
+						  int schimbat = 0;
+						  while (matrice[i2] != 0 && i2 != M) {
+							  if (matrice[i2] > 0) {
+								  wchar_t string[30];
+								  GetDlgItemText(hwnd_global, 1000 * (i2 % 10) + (i2 / 10), string, 30);
+								  SendDlgItemMessage(hDlg, IDC_LIST1, LB_ADDSTRING, NULL, (LPARAM)string);
+							  }
+							  if (matrice[i2] == -1) {
+								  for (int k = 0; k < dim; k++) {
+									  if (i2 == mutari[k].delai) {
+										  i2 = mutari[k].lai;
+										  schimbat = 1;
+									  }
+								  }
+							  }
+							  if (schimbat) {
+								  schimbat = 0;
+							  }
+							  else {
+								  i2++;
+							  }
+						  }
+	}
+		return (INT_PTR)TRUE;
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) {
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
+		}
+		break;
+	}
+	return (INT_PTR)FALSE;
+}
 
-
-
-
-
-
+// Step 4: the Window Procedure
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	switch (msg) {
+	case WM_PAINT:
+	{
+					 PAINTSTRUCT ps;
+					 HDC hdc = BeginPaint(hwnd, &ps);
+					 //paint:
+					 TextOut(hdc, 120, 35, L"Valoare:", 9);
+					 EndPaint(hwnd, &ps);
+	}
+		break;
+	case WM_COMMAND:
+	{
+					   int wmId = LOWORD(wParam);
+					   if (wmId == BUTTON1_ID) {
+						   adauga_memorie(hwnd);
+						   SetDlgItemText(hwnd, EDIT1_ID, L"");
+						   SetFocus(GetDlgItem(hwnd, EDIT1_ID));
+					   }
+					   if (wmId == BUTTON2_ID) {
+						   //DialogBox((HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),
+						   DialogBox((HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
+							   MAKEINTRESOURCE(IDD_DIALOG1),
+							   hwnd,
+							   (DLGPROC)procedura);
+					   }
+					   if (wmId == BUTTON3_ID) {
+						   int nr = GetDlgItemInt(hwnd, EDIT2_ID, NULL, NULL);
+						   cautare(nr);
+					   }
+					   if (wmId == BUTTON5_ID) {
+						   sortare();
+					   }
+					   if (wmId == BUTTON4_ID) {
+						   int nr = GetDlgItemInt(hwnd, EDIT2_ID, NULL, NULL);
+						   cautare_stergere(nr);
+					   }
+	}
+		break;
+	case WM_CLOSE:
+		DestroyWindow(hwnd);
+		break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+	default:
+		return DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+	return 0;
+}
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
