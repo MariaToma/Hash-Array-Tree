@@ -4,7 +4,7 @@
 #include "resource.h"
 
 #define M 140
-#define BUTTON1_ID 12500
+#define BUTTON1_ID 12500 // fiecare buton are un id
 #define BUTTON2_ID 12501
 #define BUTTON3_ID 12502
 #define EDIT1_ID 12503
@@ -20,13 +20,14 @@ typedef struct {
 BestStructEver mutari[M];
 int dim = 0;
 
-const int offsetX = 30;
-const int offsetY = 100; //dimensiunile "memoriei" reprezentata prin matrice
+const int offsetX = 30; //dimensiunile "memoriei" reprezentata prin matrice
+const int offsetY = 100;
 
 const wchar_t g_szClassName[] = L"myWindowClass";
 int matrice[M];
 int i = 0;
 HWND hwnd_global;
+
 void init() {
 	for (int i = 0; i < M; i++)
 	{
@@ -58,6 +59,7 @@ void increment(HWND hwnd) {
 		SendMessage(hwnd, WM_DESTROY, NULL, NULL); // inchid programul ?? 
 	}
 }
+
 int adauga_memorie(HWND hwnd) {
 	wchar_t numar[10];
 	GetDlgItemText(hwnd, EDIT1_ID, numar, 10); // pune valoarea introdusa de la tastarura in "numar"
@@ -84,36 +86,33 @@ int adauga_memorie(HWND hwnd) {
 	return 0;
 }
 
-
-void sortare()
-{
-	int j = 0;
-	int l = 0;
-	while (j != i - 1)
-	{
+void sortare() {
+	int j = 0, l = 0;
+	while (j != i - 1) {
 		l = j + 1;
-		if (matrice[l] == -1)
-		{
-			for (int k = 0; k < dim; k++)
-			{
-				if (l == mutari[k].delai) l = mutari[k].lai;
+		if (matrice[l] == -1) {
+			for (int k = 0; k < dim; k++) {
+				if (l == mutari[k].delai) {
+					l = mutari[k].lai;
+				}
 			}
 		}
-		while (l != i - 0)
-		{
-			if (matrice[j]>matrice[l])
-			{
+
+		while (l != i - 0) {
+			if (matrice[j] > matrice[l]) {
 				interschimba(j, l);
 			}
-		}
-		l++;
-		if (matrice[j] == -1)
-		{
-			for (int k = 0; k < dim; k++)
-			{
-				if (j == mutari[k].delai) j = mutari[k].lai;
+
+			l++;
+			if (matrice[l] == -1) {
+				for (int k = 0; k < dim; k++) {
+					if (l == mutari[k].delai) {
+						l = mutari[k].lai;
+					}
+				}
 			}
 		}
+
 		j++;
 		if (matrice[j] == -1) {
 			for (int k = 0; k < dim; k++) {
@@ -122,9 +121,9 @@ void sortare()
 				}
 			}
 		}
-
 	}
 }
+
 void cautare_stergere(int nr) {
 	int i2 = 0;
 	int i3;
@@ -183,26 +182,25 @@ void cautare_stergere(int nr) {
 			i2++;
 		}
 	}
-	if (!gasit) MessageBox(hwnd_global, L"Numariul nu a fost gasit!", L"Ups!", MB_ICONINFORMATION);
+	if (!gasit) MessageBox(hwnd_global, L"Numarul nu a fost gasit!", L"Ups!", MB_ICONINFORMATION);
 }
-
 
 void cautare(int nr) {
 	int i2 = 0;
 	int gasit = 0;
 	int schimbat = 0;
-	while (matrice[i2] != 0 && i2 != M) {
+	while (matrice[i2] != 0 && i2 != M) { //daca este != 0 si daca pozatia sa nu este mai mare decat dimensiunea
 		if (matrice[i2] == nr) {
 			wchar_t mesaj[100];
 			wchar_t numar[10];
 			wcscpy_s(mesaj, 100, L"A fost gasit pe pozitia ( ");
-			_itow_s(i2 / 10, numar, 10, 10);
+			_itow_s(i2 / 10, numar, 10, 10); // "formez" pozitia numarului
 			wcscat_s(mesaj, 100, numar);
 			wcscat_s(mesaj, 100, L", ");
 			_itow_s(i2 % 10, numar, 10, 10);
 			wcscat_s(mesaj, 100, numar);
 			wcscat_s(mesaj, 100, L" ) !!!");
-			MessageBox(hwnd_global, mesaj, L"Gasit", MB_ICONINFORMATION);
+			MessageBox(hwnd_global, mesaj, L"Gasit", MB_ICONINFORMATION);// denumesc fereastra
 			gasit = 1;
 		}
 		if (matrice[i2] == -1) {
@@ -223,7 +221,7 @@ void cautare(int nr) {
 	if (!gasit) MessageBox(hwnd_global, L"Numarul nu a fost gasit!", L"Ups!", MB_ICONINFORMATION);
 }
 
-INT_PTR CALLBACK procedura(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+INT_PTR CALLBACK procedura(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) { //pt dialog
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message) {
 	case WM_INITDIALOG:
@@ -235,6 +233,7 @@ INT_PTR CALLBACK procedura(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 								  wchar_t string[30];
 								  GetDlgItemText(hwnd_global, 1000 * (i2 % 10) + (i2 / 10), string, 30);
 								  SendDlgItemMessage(hDlg, IDC_LIST1, LB_ADDSTRING, NULL, (LPARAM)string);
+								  //combinatia intre GetDlgItem si SendMessage()
 							  }
 							  if (matrice[i2] == -1) {
 								  for (int k = 0; k < dim; k++) {
@@ -263,7 +262,7 @@ INT_PTR CALLBACK procedura(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 	return (INT_PTR)FALSE;
 }
 
-// Step 4: the Window Procedure
+// Step 4: the Window Procedure //?????
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg) {
 	case WM_PAINT:
@@ -310,11 +309,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		PostQuitMessage(0);
 		break;
 	default:
-		return DefWindowProc(hwnd, msg, wParam, lParam);
+		return DefWindowProc(hwnd, msg, wParam, lParam); // apeleaza procedura predefinita pt Windows
 	}
 	return 0;
 }
-
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int nCmdShow) {
@@ -324,6 +322,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// Initializari ale matricei:
 	srand(time(NULL));
 	init();
+
 	//Step 1: Registering the Window Class
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.style = 0;
@@ -343,6 +342,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			MB_ICONEXCLAMATION | MB_OK);
 		return 0;
 	}
+
 	// Step 2: Creating the Window
 	hwnd = CreateWindowEx(
 		WS_EX_CLIENTEDGE,
@@ -363,11 +363,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
 
+	// aici am adaugat butoanele:
+
 	for (int i = 0; i < M; i++) {
 		HWND x = CreateWindow(L"EDIT", L"", WS_CHILD | WS_VISIBLE | WS_BORDER | ES_READONLY,
 			offsetX + (i % 10) * 40, offsetY + (i / 10) * 30, 40, 20, hwnd, (HMENU)(1000 * (i % 10) + (i / 10)), hInstance, NULL);
-		if (matrice[i] == -1) {
-			SetWindowText(x, L"XXX");
+		if (matrice[i] == -1) { //aici o sa am memoria ocupata
+			SetWindowText(x, L"HHH");
 		}
 	}
 	CreateWindow(L"BUTTON", L"Adauga", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
@@ -390,5 +392,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		TranslateMessage(&Msg);
 		DispatchMessage(&Msg);
 	}
+	return Msg.wParam;
+
 
 }
+
