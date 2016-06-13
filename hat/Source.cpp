@@ -363,6 +363,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
 
+	for (int i = 0; i < M; i++) {
+		HWND x = CreateWindow(L"EDIT", L"", WS_CHILD | WS_VISIBLE | WS_BORDER | ES_READONLY,
+			offsetX + (i % 10) * 40, offsetY + (i / 10) * 30, 40, 20, hwnd, (HMENU)(1000 * (i % 10) + (i / 10)), hInstance, NULL);
+		if (matrice[i] == -1) {
+			SetWindowText(x, L"XXX");
+		}
+	}
+	CreateWindow(L"BUTTON", L"Adauga", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+		30, 30, 80, 25, hwnd, (HMENU)BUTTON1_ID, NULL, NULL);
+	CreateWindow(L"BUTTON", L"Dialog", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+		30, 0, 80, 25, hwnd, (HMENU)BUTTON2_ID, NULL, NULL);
+	CreateWindow(L"BUTTON", L"Cauta", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+		30, 60, 80, 25, hwnd, (HMENU)BUTTON3_ID, NULL, NULL);
+	CreateWindowEx(WS_EX_CLIENTEDGE, L"EDIT", L"", WS_CHILD | WS_VISIBLE | ES_NUMBER | WS_BORDER,
+		180, 30, 80, 25, hwnd, (HMENU)EDIT1_ID, NULL, NULL);
+	CreateWindowEx(WS_EX_CLIENTEDGE, L"EDIT", L"", WS_CHILD | WS_VISIBLE | ES_NUMBER | WS_BORDER,
+		250, 60, 80, 25, hwnd, (HMENU)EDIT2_ID, NULL, NULL);
+	CreateWindow(L"BUTTON", L"Cauta si sterge", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+		120, 60, 120, 25, hwnd, (HMENU)BUTTON4_ID, NULL, NULL);
+	CreateWindow(L"BUTTON", L"Sortare", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+		180, 0, 120, 25, hwnd, (HMENU)BUTTON5_ID, NULL, NULL);
+
 	// Step 3: The Message Loop
 	while (GetMessage(&Msg, NULL, 0, 0) > 0) {
 		TranslateMessage(&Msg);
